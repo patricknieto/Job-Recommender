@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Skills in US</title>
+    <link rel="stylesheet" href = "jobs.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="jobs.js"></script>
+  </head>
+  <style>
+
+    .bar {
+      fill: steelblue;
+    }
+
+    .axis text {
+      font: 10px sans-serif;
+    }
+
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+    .x.axis path {
+      display: none;
+    }
+
+  </style>
+  <svg class="chart"></svg>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript">
+
+      var margin = {top: 20, right: 30, bottom: 30, left: 40},
+          width = 960 - margin.left - margin.right,
+          height = 500 - margin.top - margin.bottom;
+
+      var width = 960,
+          height = 500;
+
+      var y = d3.scale.linear()
+          .range([height, 0]);
+
+      var x = d3.scale.ordinal()
+          .rangeRoundBands([0, width], .1);
+
+      var xAxis = d3.svg.axis()
+          .scale(x)
+          .orient("bottom");
+
+      var yAxis = d3.svg.axis()
+          .scale(y)
+          .orient("left")
+          .ticks(10, "%");
+
+      var chart = d3.select(".chart")
+          .attr("width", width)
+          .attr("height", height);
+
+      var chart = d3.select(".chart")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      d3.tsv("city.tsv", type, function(error, data) {
+        x.domain(data.map(function(d) { return d.Term; }));
+        y.domain([0, d3.max(data, function(d) { return d.Chicago; })]);
+
+
+        chart.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+        chart.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+          .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", ".75em")
+            .style("text-anchor", "end")
+            .text("Frequency");
+
+
+        chart.selectAll(".bar")
+            .data(data)
+          .enter().append("rect")
+            .attr("class", "bar")
+            .attr("y", function(d) { return y(d.Chicago); })
+            .attr("x", function(d) { return x(d.Term); })
+            .attr("height", function(d) { return height - y(d.Chicago); })
+            .attr("width", x.rangeBand());
+
+      });
+
+
+      function type(d) {
+        d.Chicago = +d.Chicago; // coerce to number
+        return d;
+      }
+
+
+
+    </script>
+      <div class="dropdown">
+        <button onclick="myFunction()" class="dropbtn">Select</button>
+        <div id="myDropdown" class="dropdown-content">
+          <a href="http://127.0.0.1:5000/" onClick="getGraph(data)">Link 1</a>
+          <a href="http://127.0.0.1:5000/">Link 2</a>
+          <a href="http://127.0.0.1:5000/">Link 3</a>
+        </div>
+      <script type="text/javascript">
+              /* When the user clicks on the button, 
+      toggle between hiding and showing the dropdown content */
+      function myFunction() {
+          document.getElementById("myDropdown").classList.toggle("show");
+      }
+
+      // Close the dropdown menu if the user clicks outside of it
+      window.onclick = function(event) {
+        if (!event.target.matches('.dropbtn')) {
+
+          var dropdowns = document.getElementsByClassName("dropdown-content");
+          var i;
+          for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+              openDropdown.classList.remove('show');
+            }
+          }
+        }
+      }
+
+      </script>
+</div>
+  </body>
+
+    
+</html>
